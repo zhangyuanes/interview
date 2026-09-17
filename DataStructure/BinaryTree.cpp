@@ -10,7 +10,6 @@
 #define UNSUCCESS 0
 #define dataNum 5
 int i = 0;
-int dep = 0;
 char data[dataNum] = { 'A', 'B', 'C', 'D', 'E' };
 
 typedef int Status;
@@ -63,17 +62,17 @@ int Leaves(BiTree T)
 	return r + l;
 }
 
-// 层次遍历：dep是个全局变量,高度
+// 对二叉树T求高度
 int depTraverse(BiTree T)
 {
-	if (NULL == T) return ERROR;
-
-	dep = (depTraverse(T->lchild) > depTraverse(T->rchild)) ? depTraverse(T->lchild) : depTraverse(T->rchild);
-
-	return dep + 1;
+	if (NULL == T)
+		return ERROR;
+	int l = depTraverse(T->lchild);
+	int r = depTraverse(T->rchild);
+	return (l > r ? l : r) + 1;
 }
 
-// 高度遍历：lev是局部变量，层次
+// 层次遍历：lev是局部变量，层次
 void levTraverse(BiTree T, Status(*visit)(TElemType e), int lev)
 {
 	if (NULL == T) return;

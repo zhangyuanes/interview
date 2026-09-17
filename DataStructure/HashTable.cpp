@@ -106,14 +106,17 @@ Status recreateHash(HashTable &H) {
 Status InsertHash(HashTable &H, KeyType key) {
 	int p, c;
 	if (UNSUCCESS == SearchHash(H, key, p, c)) { //没有相同key
-		if (c*1.0 / H.size < 0.5) { //冲突次数未达到上线
+		if (c*1.0 / H.size < 0.5) { //冲突次数未达到上限
 			//插入代码
 			H.rcd[p].key = key;
 			H.tag[p] = 1;
 			H.count++;
 			return SUCCESS;
 		}
-		else recreateHash(H); //重构哈希表 
+		else {
+			recreateHash(H); //重构哈希表
+			return InsertHash(H, key); //递归重试，保证触发重建的key被插入新表
+		}
 	}
 	return UNSUCCESS;
 }

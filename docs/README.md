@@ -173,12 +173,12 @@ inline int functionName(int first, int second,...) {/****/};
 // 类内定义，隐式内联
 class A {
     int doA() { return 0; }         // 隐式内联
-}
+};
 
 // 类外定义，需要显式内联
 class A {
     int doA();
-}
+};
 inline int A::doA() { return 0; }   // 需要显式内联
 ```
 
@@ -186,7 +186,7 @@ inline int A::doA() { return 0; }   // 需要显式内联
 
 1. 将 inline 函数体复制到 inline 函数调用点处； 
 2. 为所用 inline 函数中的局部变量分配内存空间； 
-3. 将 inline 函数的的输入参数和返回值映射到调用方法的局部变量空间中； 
+3. 将 inline 函数的输入参数和返回值映射到调用方法的局部变量空间中；
 4. 如果 inline 函数有多个返回点，将其转变为 inline 函数代码块末尾的分支（使用 GOTO）。
 
 #### 优缺点
@@ -220,37 +220,37 @@ using namespace std;
 class Base
 {
 public:
-    inline virtual void who()
-    {
-        cout << "I am Base\n";
-    }
-    virtual ~Base() {}
+	inline virtual void who()
+	{
+		cout << "I am Base\n";
+	}
+	virtual ~Base() {}
 };
 class Derived : public Base
 {
 public:
-    inline void who()  // 不写inline时隐式内联
-    {
-        cout << "I am Derived\n";
-    }
+	inline void who()  // 不写inline时隐式内联
+	{
+		cout << "I am Derived\n";
+	}
 };
 
 int main()
 {
-    // 此处的虚函数 who()，是通过类（Base）的具体对象（b）来调用的，编译期间就能确定了，所以它可以是内联的，但最终是否内联取决于编译器。 
-    Base b;
-    b.who();
+	// 此处的虚函数 who()，是通过类（Base）的具体对象（b）来调用的，编译期间就能确定了，所以它可以是内联的，但最终是否内联取决于编译器。 
+	Base b;
+	b.who();
 
-    // 此处的虚函数是通过指针调用的，呈现多态性，需要在运行时期间才能确定，所以不能为内联。  
-    Base *ptr = new Derived();
-    ptr->who();
+	// 此处的虚函数是通过指针调用的，呈现多态性，需要在运行时期间才能确定，所以不能为内联。  
+	Base *ptr = new Derived();
+	ptr->who();
 
-    // 因为Base有虚析构函数（virtual ~Base() {}），所以 delete 时，会先调用派生类（Derived）析构函数，再调用基类（Base）析构函数，防止内存泄漏。
-    delete ptr;
-    ptr = nullptr;
+	// 因为Base有虚析构函数（virtual ~Base() {}），所以 delete 时，会先调用派生类（Derived）析构函数，再调用基类（Base）析构函数，防止内存泄漏。
+	delete ptr;
+	ptr = nullptr;
 
-    system("pause");
-    return 0;
+	system("pause");
+	return 0;
 } 
 ```
 
@@ -495,14 +495,14 @@ explicit 使用
 ```cpp
 struct A
 {
-    A(int) { }
-    operator bool() const { return true; }
+	A(int) { }
+	operator bool() const { return true; }
 };
 
 struct B
 {
-    explicit B(int) {}
-    explicit operator bool() const { return true; }
+	explicit B(int) {}
+	explicit operator bool() const { return true; }
 };
 
 void doA(A a) {}
@@ -511,29 +511,29 @@ void doB(B b) {}
 
 int main()
 {
-    A a1(1);		// OK：直接初始化
-    A a2 = 1;		// OK：复制初始化
-    A a3{ 1 };		// OK：直接列表初始化
-    A a4 = { 1 };		// OK：复制列表初始化
-    A a5 = (A)1;		// OK：允许 static_cast 的显式转换 
-    doA(1);			// OK：允许从 int 到 A 的隐式转换
-    if (a1);		// OK：使用转换函数 A::operator bool() 的从 A 到 bool 的隐式转换
-    bool a6(a1);		// OK：使用转换函数 A::operator bool() 的从 A 到 bool 的隐式转换
-    bool a7 = a1;		// OK：使用转换函数 A::operator bool() 的从 A 到 bool 的隐式转换
-    bool a8 = static_cast<bool>(a1);  // OK ：static_cast 进行直接初始化
+	A a1(1);		// OK：直接初始化
+	A a2 = 1;		// OK：复制初始化
+	A a3{ 1 };		// OK：直接列表初始化
+	A a4 = { 1 };		// OK：复制列表初始化
+	A a5 = (A)1;		// OK：允许 static_cast 的显式转换 
+	doA(1);			// OK：允许从 int 到 A 的隐式转换
+	if (a1);		// OK：使用转换函数 A::operator bool() 的从 A 到 bool 的隐式转换
+	bool a6(a1);		// OK：使用转换函数 A::operator bool() 的从 A 到 bool 的隐式转换
+	bool a7 = a1;		// OK：使用转换函数 A::operator bool() 的从 A 到 bool 的隐式转换
+	bool a8 = static_cast<bool>(a1);  // OK ：static_cast 进行直接初始化
 
-    B b1(1);		// OK：直接初始化
-    B b2 = 1;		// 错误：被 explicit 修饰构造函数的对象不可以复制初始化
-    B b3{ 1 };		// OK：直接列表初始化
-    B b4 = { 1 };		// 错误：被 explicit 修饰构造函数的对象不可以复制列表初始化
-    B b5 = (B)1;		// OK：允许 static_cast 的显式转换
-    doB(1);			// 错误：被 explicit 修饰构造函数的对象不可以从 int 到 B 的隐式转换
-    if (b1);		// OK：被 explicit 修饰转换函数 B::operator bool() 的对象可以从 B 到 bool 的按语境转换
-    bool b6(b1);		// OK：被 explicit 修饰转换函数 B::operator bool() 的对象可以从 B 到 bool 的按语境转换
-    bool b7 = b1;		// 错误：被 explicit 修饰转换函数 B::operator bool() 的对象不可以隐式转换
-    bool b8 = static_cast<bool>(b1);  // OK：static_cast 进行直接初始化
+	B b1(1);		// OK：直接初始化
+	B b2 = 1;		// 错误：被 explicit 修饰构造函数的对象不可以复制初始化
+	B b3{ 1 };		// OK：直接列表初始化
+	B b4 = { 1 };		// 错误：被 explicit 修饰构造函数的对象不可以复制列表初始化
+	B b5 = (B)1;		// OK：允许 static_cast 的显式转换
+	doB(1);			// 错误：被 explicit 修饰构造函数的对象不可以从 int 到 B 的隐式转换
+	if (b1);		// OK：被 explicit 修饰转换函数 B::operator bool() 的对象可以从 B 到 bool 的按语境转换
+	bool b6(b1);		// OK：被 explicit 修饰转换函数 B::operator bool() 的对象可以从 B 到 bool 的按语境转换
+	bool b7 = b1;		// 错误：被 explicit 修饰转换函数 B::operator bool() 的对象不可以隐式转换
+	bool b8 = static_cast<bool>(b1);  // OK：static_cast 进行直接初始化
 
-    return 0;
+	return 0;
 }
 ```
 
@@ -627,24 +627,24 @@ int count = 11;         // 全局（::）的 count
 
 class A {
 public:
-    static int count;   // 类 A 的 count（A::count）
+	static int count;   // 类 A 的 count（A::count）
 };
 int A::count = 21;
 
 void fun()
 {
-    int count = 31;     // 初始化局部的 count 为 31
-    count = 32;         // 设置局部的 count 的值为 32
+	int count = 31;     // 初始化局部的 count 为 31
+	count = 32;         // 设置局部的 count 的值为 32
 }
 
 int main() {
-    ::count = 12;       // 测试 1：设置全局的 count 的值为 12
+	::count = 12;       // 测试 1：设置全局的 count 的值为 12
 
-    A::count = 22;      // 测试 2：设置类 A 的 count 为 22
+	A::count = 22;      // 测试 2：设置类 A 的 count 为 22
 
-    fun();		        // 测试 3
+	fun();		        // 测试 3
 
-    return 0;
+	return 0;
 }
 ```
 
@@ -700,7 +700,7 @@ auto fcn2(It beg, It end) -> typename remove_reference<decltype(*beg)>::type
 
 右值引用就是必须绑定到右值（一个临时对象、将要销毁的对象）的引用，一般表示对象的值。
 
-右值引用可实现转移语义（Move Sementics）和精确传递（Perfect Forwarding），它的主要目的有两个方面：
+右值引用可实现转移语义（Move Semantics）和精确传递（Perfect Forwarding），它的主要目的有两个方面：
 
 * 消除两个对象交互时不必要的对象拷贝，节省运算存储资源，提高效率。
 * 能够更简洁明确地定义泛型函数。
@@ -821,8 +821,8 @@ int main()
 class A
 {
 public:
-    void do(int a);
-    void do(int a, int b);
+    void print(int a);
+    void print(int a, int b);
 };
 ```
 
@@ -902,7 +902,7 @@ int main()
     shape1->calcArea();    
     delete shape1;  // 因为Shape有虚析构函数，所以delete释放内存时，先调用子类析构函数，再调用基类析构函数，防止内存泄漏。
     shape1 = NULL;
-    return 0；
+    return 0;
 }
 ```
 
@@ -1047,7 +1047,7 @@ new (place_address) type [size] { braced initializer list }
 #### C++ 98
 
 ```cpp
-std::auto_ptr<std::string> ps (new std::string(str))；
+std::auto_ptr<std::string> ps (new std::string(str));
 ```
 
 #### C++ 11
@@ -1084,7 +1084,7 @@ unique_ptr 是 C++11 才开始提供的类型，是一种在异常时可以帮�
 
 ##### auto_ptr 与 unique_ptr 比较
 
-* auto_ptr 可以赋值拷贝，复制拷贝后所有权转移；unqiue_ptr 无拷贝赋值语义，但实现了`move` 语义；
+* auto_ptr 可以赋值拷贝，复制拷贝后所有权转移；unique_ptr 无拷贝赋值语义，但实现了`move` 语义；
 * auto_ptr 对象不能管理数组（析构调用 `delete`），unique_ptr 可以管理数组（析构调用 `delete[]` ）；
 
 ### 强制类型转换运算符
@@ -1231,11 +1231,11 @@ void doSomething(Flyable *obj)                 // 做些事情
 }
 
 int main(){
-    Bird *b = new Bird();
-    doSomething(b);
-    delete b;
-    b = nullptr;
-    return 0;
+	Bird *b = new Bird();
+	doSomething(b);
+	delete b;
+	b = nullptr;
+	return 0;
 }
 ```
 
@@ -1286,7 +1286,7 @@ int main(){
 39. 明智而审慎地使用 private 继承（private 继承意味着 is-implemented-in-terms-of（根据某物实现出），尽可能使用复合，当 derived class 需要访问 protected base class 的成员，或需要重新定义继承而来的时候 virtual 函数，或需要 empty base 最优化时，才使用 private 继承）
 40. 明智而审慎地使用多重继承（多继承比单一继承复杂，可能导致新的歧义性，以及对 virtual 继承的需要，但确有正当用途，如 “public 继承某个 interface class” 和 “private 继承某个协助实现的 class”；virtual 继承可解决多继承下菱形继承的二义性问题，但会增加大小、速度、初始化及赋值的复杂度等等成本）
 41. 了解隐式接口和编译期多态（class 和 templates 都支持接口（interfaces）和多态（polymorphism）；class 的接口是以签名为中心的显式的（explicit），多态则是通过 virtual 函数发生于运行期；template 的接口是奠基于有效表达式的隐式的（implicit），多态则是通过 template 具现化和函数重载解析（function overloading resolution）发生于编译期）
-42. 了解 typename 的双重意义（声明 template 类型参数是，前缀关键字 class 和 typename 的意义完全相同；请使用关键字 typename 标识嵌套从属类型名称，但不得在基类列（base class lists）或成员初值列（member initialization list）内以它作为 base class 修饰符）
+42. 了解 typename 的双重意义（声明 template 类型参数时，前缀关键字 class 和 typename 的意义完全相同；请使用关键字 typename 标识嵌套从属类型名称，但不得在基类列（base class lists）或成员初值列（member initialization list）内以它作为 base class 修饰符）
 43. 学习处理模板化基类内的名称（可在 derived class templates 内通过 `this->` 指涉 base class templates 内的成员名称，或藉由一个明白写出的 “base class 资格修饰符” 完成）
 44. 将与参数无关的代码抽离 templates（因类型模板参数（non-type template parameters）而造成代码膨胀往往可以通过函数参数或 class 成员变量替换 template 参数来消除；因类型参数（type parameters）而造成的代码膨胀往往可以通过让带有完全相同二进制表述（binary representations）的实现类型（instantiation types）共享实现码）
 45. 运用成员函数模板接受所有兼容类型（请使用成员函数模板（member function templates）生成 “可接受所有兼容类型” 的函数；声明 member templates 用于 “泛化 copy 构造” 或 “泛化 assignment 操作” 时还需要声明正常的 copy 构造函数和 copy assignment 操作符）
@@ -1295,7 +1295,7 @@ int main(){
 48. 认识 template 元编程（模板元编程（TMP，template metaprogramming）可将工作由运行期移往编译期，因此得以实现早期错误侦测和更高的执行效率；TMP 可被用来生成 “给予政策选择组合”（based on combinations of policy choices）的客户定制代码，也可用来避免生成对某些特殊类型并不适合的代码）
 49. 了解 new-handler 的行为（set\_new\_handler 允许客户指定一个在内存分配无法获得满足时被调用的函数；nothrow new 是一个颇具局限的工具，因为它只适用于内存分配（operator new），后继的构造函数调用还是可能抛出异常）
 50. 了解 new 和 delete 的合理替换时机（为了检测运用错误、收集动态分配内存之使用统计信息、增加分配和归还速度、降低缺省内存管理器带来的空间额外开销、弥补缺省分配器中的非最佳齐位、将相关对象成簇集中、获得非传统的行为）
-51. 编写 new 和 delete 时需固守常规（operator new 应该内涵一个无穷循环，并在其中尝试分配内存，如果它无法满足内存需求，就应该调用 new-handler，它也应该有能力处理 0 bytes 申请，class 专属版本则还应该处理 “比正确大小更大的（错误）申请”；operator delete 应该在收到 null 指针时不做任何事，class 专属版本则还应该处理 “比正确大小更大的（错误）申请”）
+51. 编写 new 和 delete 时需固守常规（operator new 应该内含一个无穷循环，并在其中尝试分配内存，如果它无法满足内存需求，就应该调用 new-handler，它也应该有能力处理 0 bytes 申请，class 专属版本则还应该处理 “比正确大小更大的（错误）申请”；operator delete 应该在收到 null 指针时不做任何事，class 专属版本则还应该处理 “比正确大小更大的（错误）申请”）
 52. 写了 placement new 也要写 placement delete（当你写一个 placement operator new，请确定也写出了对应的 placement operator delete，否则可能会发生隐微而时断时续的内存泄漏；当你声明 placement new 和 placement delete，请确定不要无意识（非故意）地遮掩了它们地正常版本）
 53. 不要轻忽编译器的警告
 54. 让自己熟悉包括 TR1 在内的标准程序库（TR1，C++ Technical Report 1，C++11 标准的草稿文件）
@@ -1349,8 +1349,8 @@ int main(){
 [deque](https://github.com/huihut/interview/tree/master/STL#deque)|双端队列|头尾插入、头尾删除 O(1)|无序|可重复|一个中央控制器 + 多个缓冲区，支持首尾快速增删，支持随机访问
 [forward_list](https://github.com/huihut/interview/tree/master/STL#forward_list)|单向链表|插入、删除 O(1)|无序|可重复|不支持随机访问
 [list](https://github.com/huihut/interview/tree/master/STL#list)|双向链表|插入、删除 O(1)|无序|可重复|不支持随机访问
-[stack](https://github.com/huihut/interview/tree/master/STL#stack)|deque / list|顶部插入、顶部删除 O(1)|无序|可重复|deque 或 list 封闭头端开口，不用 vector 的原因应该是容量大小有限制，扩容耗时
-[queue](https://github.com/huihut/interview/tree/master/STL#queue)|deque / list|尾部插入、头部删除 O(1)|无序|可重复|deque 或 list 封闭头端开口，不用 vector 的原因应该是容量大小有限制，扩容耗时
+[stack](https://github.com/huihut/interview/tree/master/STL#stack)|deque / list|顶部插入、顶部删除 O(1)|无序|可重复|默认 deque，也可用 list 或 vector（只需支持 push_back、pop_back、back）
+[queue](https://github.com/huihut/interview/tree/master/STL#queue)|deque / list|尾部插入、头部删除 O(1)|无序|可重复|默认 deque，也可用 list；不能用 vector，因为 vector 没有高效的 pop_front（删除队头元素为 O(n)）
 [priority_queue](https://github.com/huihut/interview/tree/master/STL#priority_queue)|vector + max-heap|插入、删除 O(log<sub>2</sub>n)|有序|可重复|vector容器+heap处理规则
 [set](https://github.com/huihut/interview/tree/master/STL#set)|红黑树|插入、删除、查找 O(log<sub>2</sub>n)|有序|不可重复|
 [multiset](https://github.com/huihut/interview/tree/master/STL#multiset)|红黑树|插入、删除、查找 O(log<sub>2</sub>n)|有序|可重复|
@@ -1367,6 +1367,14 @@ int main(){
 ---|---|---|---
 [find](http://www.cplusplus.com/reference/algorithm/find/)|顺序查找|O(n)|可重复
 [sort](https://github.com/gcc-mirror/gcc/blob/master/libstdc++-v3/include/bits/stl_algo.h#L4808)|[内省排序](https://en.wikipedia.org/wiki/Introsort)|O(n*log<sub>2</sub>n)|可重复
+[for_each](http://www.cplusplus.com/reference/algorithm/for_each/)|顺序遍历|O(n)|可重复
+[count](http://www.cplusplus.com/reference/algorithm/count/)|顺序计数|O(n)|可重复
+[binary_search](http://www.cplusplus.com/reference/algorithm/binary_search/)|二分查找|O(log<sub>2</sub>n)|可重复
+[lower_bound](http://www.cplusplus.com/reference/algorithm/lower_bound/) / [upper_bound](http://www.cplusplus.com/reference/algorithm/upper_bound/)|二分查找|O(log<sub>2</sub>n)|可重复
+[reverse](http://www.cplusplus.com/reference/algorithm/reverse/)|顺序翻转|O(n)|可重复
+[min_element](http://www.cplusplus.com/reference/algorithm/min_element/) / [max_element](http://www.cplusplus.com/reference/algorithm/max_element/)|顺序查找|O(n)|可重复
+[nth_element](http://www.cplusplus.com/reference/algorithm/nth_element/)|快速选择|平均 O(n)|可重复
+[accumulate](http://www.cplusplus.com/reference/numeric/accumulate/)|顺序求和|O(n)|可重复
 
 
 <a id="data-structure"></a>
@@ -1383,10 +1391,10 @@ int main(){
 
 ```cpp
 typedef struct {
-    ElemType *elem;
-    int top;
-    int size;
-    int increment;
+	ElemType *elem;
+	int top;
+	int size;
+	int increment;
 } SqStack;
 ```
 
@@ -1398,10 +1406,10 @@ typedef struct {
 
 ```cpp
 typedef struct {
-    ElemType * elem;
-    int front;
-    int rear;
-    int maxSize;
+	ElemType * elem;
+	int front;
+	int rear;
+	int maxSize;
 }SqQueue;
 ```
 
@@ -1429,10 +1437,10 @@ typedef struct {
 
 ```cpp
 typedef struct {
-    ElemType *elem;
-    int length;
-    int size;
-    int increment;
+	ElemType *elem;
+	int length;
+	int size;
+	int increment;
 } SqList;
 ```
 
@@ -1512,14 +1520,14 @@ typedef struct LNode {
 typedef char KeyType;
 
 typedef struct {
-    KeyType key;
+	KeyType key;
 }RcdType;
 
 typedef struct {
-    RcdType *rcd;
-    int size;
-    int count;
-    bool *tag;
+	RcdType *rcd;
+	int size;
+	int count;
+	bool *tag;
 }HashTable;
 ```
 
@@ -1639,7 +1647,7 @@ typedef struct BiTNode
 
 * 先序遍历
 * 中序遍历
-* 后续遍历
+* 后序遍历
 * 层次遍历
 
 #### 分类
@@ -1651,10 +1659,10 @@ typedef struct BiTNode
 * 二叉查找树（二叉排序树）：左 < 根 < 右
 * 平衡二叉树（AVL树）：| 左子树树高 - 右子树树高 | <= 1
 * 最小失衡树：平衡二叉树插入新结点导致失衡的子树：调整：
-    * LL型：根的左孩子右旋
-    * RR型：根的右孩子左旋
-    * LR型：根的左孩子左旋，再右旋
-    * RL型：右孩子的左子树，先右旋，再左旋
+    * LL型：对根右旋
+    * RR型：对根左旋
+    * LR型：先对根的左孩子左旋，再对根右旋
+    * RL型：先对根的右孩子右旋，再对根左旋
 
 ### 其他树及森林
 
@@ -1686,10 +1694,10 @@ typedef struct BiTNode
 
 调整：
 
-* LL 型：根的左孩子右旋
-* RR 型：根的右孩子左旋
-* LR 型：根的左孩子左旋，再右旋
-* RL 型：右孩子的左子树，先右旋，再左旋
+* LL 型：对根右旋
+* RR 型：对根左旋
+* LR 型：先对根的左孩子左旋，再对根右旋
+* RL 型：先对根的右孩子右旋，再对根左旋
 
 #### 红黑树
 
@@ -1735,7 +1743,7 @@ B 树、B+ 树图片
 
 ##### 区别
 
-* B+树中只有叶子节点会带有指向记录的指针（ROWID），而B树则所有节点都带有，在内部节点出现的索引项不会再出现在叶子节点中。
+* B+树中只有叶子节点会带有指向记录的指针（ROWID），而B树所有节点都带有，且在内部节点出现的索引项不会再出现在叶子节点中。
 * B+树中所有叶子节点都是通过指针连接在一起，而B树不会。
 
 ##### B树的优点
@@ -1778,7 +1786,7 @@ B 树、B+ 树图片
 [归并排序](Algorithm/MergeSort.h) | O(n*log<sub>2</sub>n) | O(n*log<sub>2</sub>n)|O(n)|稳定
 [希尔排序](Algorithm/ShellSort.h) | O(n*log<sup>2</sup>n)|O(n<sup>2</sup>)|O(1)|不稳定
 [计数排序](Algorithm/CountSort.cpp) | O(n+m)|O(n+m)|O(n+m)|稳定
-[桶排序](Algorithm/BucketSort.cpp) | O(n)|O(n)|O(m)|稳定
+[桶排序](Algorithm/BucketSort.cpp) | O(n)|O(n<sup>2</sup>)|O(m)|稳定
 [基数排序](Algorithm/RadixSort.h) | O(k*n)|O(n<sup>2</sup>)| |稳定
 
 > * 均按从小到大排列
@@ -1798,7 +1806,7 @@ B 树、B+ 树图片
 [哈希查找](DataStructure/HashTable.cpp) | O(1) | O(n) | 无序或有序
 [二叉查找树（二叉搜索树查找）](Algorithm/BSTSearch.h) |O(log<sub>2</sub>n) |   | 
 [红黑树](DataStructure/RedBlackTree.cpp) |O(log<sub>2</sub>n) | |
-2-3树 | O(log<sub>2</sub>n - log<sub>3</sub>n) |   | 
+2-3树 | O(log<sub>2</sub>n) |   | 
 B树/B+树 |O(log<sub>2</sub>n) |   | 
 
 ### 图搜索算法
@@ -1884,7 +1892,7 @@ B树/B+树 |O(log<sub>2</sub>n) |   |
 * 共享内存（Shared Memory）：映射一段能被其他进程所访问的内存，这段共享内存由一个进程创建，但多个进程都可以访问
     * 优点：无须复制，快捷，信息量大
     * 缺点：
-        1. 通信是通过将共享空间缓冲区直接附加到进程的虚拟地址空间中来实现的，因此进程间的读写操作的同步问题
+        1. 通信是通过将共享空间缓冲区直接附加到进程的虚拟地址空间中来实现的，因此进程间的读写操作存在同步问题
         2. 利用内存缓冲区直接交换信息，内存的实体存在于计算机中，只能同一个计算机系统中的诸多进程共享，不方便网络通信
 * 套接字（Socket）：可用于不同计算机间的进程通信
     * 优点：
@@ -2037,14 +2045,14 @@ using namespace std;
 
 int main()
 {
-    int i = 0x12345678;
+	int i = 0x12345678;
 
-    if (*((char*)&i) == 0x12)
-        cout << "大端" << endl;
-    else	
-        cout << "小端" << endl;
+	if (*((char*)&i) == 0x12)
+		cout << "大端" << endl;
+	else	
+		cout << "小端" << endl;
 
-    return 0;
+	return 0;
 }
 ```
 
@@ -2100,7 +2108,7 @@ int main()
 网络层|负责数据包从源到宿的传递和网际互连（包 Packet）|IP、ICMP、ARP、RARP、OSPF、IPX、RIP、IGRP（路由器）
 运输层|提供端到端的可靠报文传递和错误恢复（ 段Segment）|TCP、UDP、SPX
 会话层|建立、管理和终止会话（会话协议数据单元 SPDU）|NFS、SQL、NETBIOS、RPC
-表示层|对数据进行翻译、加密和压缩（表示协议数据单元 PPDU）|JPEG、MPEG、ASII
+表示层|对数据进行翻译、加密和压缩（表示协议数据单元 PPDU）|JPEG、MPEG、ASCII
 应用层|允许访问OSI环境的手段（应用协议数据单元 APDU）|FTP、DNS、Telnet、SMTP、HTTP、WWW、NFS
 
 
@@ -2285,10 +2293,10 @@ UDP 首部
 1. TCP 面向连接，UDP 是无连接的；
 2. TCP 提供可靠的服务，也就是说，通过 TCP 连接传送的数据，无差错，不丢失，不重复，且按序到达；UDP 尽最大努力交付，即不保证可靠交付
 3. TCP 的逻辑通信信道是全双工的可靠信道；UDP 则是不可靠信道
-5. 每一条 TCP 连接只能是点到点的；UDP 支持一对一，一对多，多对一和多对多的交互通信
-6. TCP 面向字节流（可能出现黏包问题），实际上是 TCP 把数据看成一连串无结构的字节流；UDP 是面向报文的（不会出现黏包问题）
-7. UDP 没有拥塞控制，因此网络出现拥塞不会使源主机的发送速率降低（对实时应用很有用，如 IP 电话，实时视频会议等）
-8. TCP 首部开销20字节；UDP 的首部开销小，只有 8 个字节
+4. 每一条 TCP 连接只能是点到点的；UDP 支持一对一，一对多，多对一和多对多的交互通信
+5. TCP 面向字节流（可能出现黏包问题），实际上是 TCP 把数据看成一连串无结构的字节流；UDP 是面向报文的（不会出现黏包问题）
+6. UDP 没有拥塞控制，因此网络出现拥塞不会使源主机的发送速率降低（对实时应用很有用，如 IP 电话，实时视频会议等）
+7. TCP 首部开销20字节；UDP 的首部开销小，只有 8 个字节
 
 #### TCP 黏包问题
 
@@ -2340,7 +2348,7 @@ TCP的拥塞控制图
 
 ##### TCP 三次握手建立连接
 
-![UDP 报文](https://gitee.com/huihut/interview/raw/master/images/TCP三次握手建立连接.png)
+![TCP 三次握手](https://gitee.com/huihut/interview/raw/master/images/TCP三次握手建立连接.png)
 
 【TCP 建立连接全过程解释】
 
@@ -2365,7 +2373,7 @@ TCP的拥塞控制图
 
 ##### TCP 四次挥手释放连接
 
-![UDP 报文](https://gitee.com/huihut/interview/raw/master/images/TCP四次挥手释放连接.png)
+![TCP 四次挥手](https://gitee.com/huihut/interview/raw/master/images/TCP四次挥手释放连接.png)
 
 【TCP 释放连接全过程解释】
 
@@ -2418,14 +2426,10 @@ TCP 有限状态机图片
 
 * TELNET 协议是 TCP/IP 协议族中的一员，是 Internet 远程登陆服务的标准协议和主要方式。它为用户提供了在本地计算机上完成远程主机工作的能力。
 
-* HTTP（HyperText Transfer Protocol，超文本传输协议）是用于从 WWW（World Wide Web，万维网）服务器传输超文本到本地浏览器的传送协议。
+#### HTTP（WWW）
 
-* SMTP（Simple Mail Transfer Protocol，简单邮件传输协议）是一组用于由源地址到目的地址传送邮件的规则，由它来控制信件的中转方式。SMTP 协议属于 TCP/IP 协议簇，它帮助每台计算机在发送或中转信件时找到下一个目的地。
-* Socket 建立网络通信连接至少要一对端口号（Socket）。Socket 本质是编程接口（API），对 TCP/IP 的封装，TCP/IP 也要提供可供程序员做网络开发所用的接口，这就是 Socket 编程接口。
-
-#### WWW
-
-* WWW（World Wide Web，环球信息网，万维网）是一个由许多互相链接的超文本组成的系统，通过互联网访问
+* WWW（World Wide Web，环球信息网，万维网）是一个由许多互相链接的超文本组成的系统，通过互联网访问。
+* HTTP（HyperText Transfer Protocol，超文本传输协议）是一种用于分布式、协作式和超媒体信息系统的应用层协议。HTTP 是万维网的数据通信的基础，是用于从 WWW（World Wide Web，万维网）服务器传输超文本到本地浏览器的传送协议。
 
 ##### URL
 
@@ -2441,10 +2445,6 @@ TCP 有限状态机图片
 
 > 其中【访问凭证信息@；:端口号；?查询；#片段ID】都属于选填项  
 > 如：`https://github.com/huihut/interview#cc`
-
-##### HTTP
-
-HTTP（HyperText Transfer Protocol，超文本传输协议）是一种用于分布式、协作式和超媒体信息系统的应用层协议。HTTP 是万维网的数据通信的基础。
 
 请求方法
 
@@ -2480,9 +2480,10 @@ TRACE | 回显服务器收到的请求，主要用于测试或诊断
 
 > 更多状态码：[菜鸟教程 . HTTP状态码](http://www.runoob.com/http/http-status-codes.html)
 
-##### 其他协议
+#### 其他协议
 
-* SMTP（Simple Mail Transfer Protocol，简单邮件传输协议）是在 Internet 传输 Email 的标准，是一个相对简单的基于文本的协议。在其之上指定了一条消息的一个或多个接收者（在大多数情况下被确认是存在的），然后消息文本会被传输。可以很简单地通过 Telnet 程序来测试一个 SMTP 服务器。SMTP 使用 TCP 端口 25。
+* SMTP（Simple Mail Transfer Protocol，简单邮件传输协议）是在 Internet 传输 Email 的标准，是一个相对简单的基于文本的协议。在其之上指定了一条消息的一个或多个接收者（在大多数情况下被确认是存在的），然后消息文本会被传输。可以很简单地通过 Telnet 程序来测试一个 SMTP 服务器。SMTP 使用 TCP 端口 25。SMTP 是一组用于由源地址到目的地址传送邮件的规则，由它来控制信件的中转方式，属于 TCP/IP 协议簇，帮助每台计算机在发送或中转信件时找到下一个目的地。
+* Socket 是应用层与 TCP/IP 协议族通信的中间软件抽象层，它是一组供程序员调用的 API（应用程序编程接口）。Socket 建立网络通信连接至少要一对端口号（Socket）。
 * DHCP（Dynamic Host Configuration Protocol，动态主机设置协议）是一个局域网的网络协议，使用 UDP 协议工作，主要有两个用途：
     * 用于内部网络或网络服务供应商自动分配 IP 地址给用户
     * 用于内部网络管理员作为对所有电脑作中央管理的手段
@@ -2511,7 +2512,7 @@ ssize_t write(int fd, const void *buf, size_t count);
 * read 函数是负责从 fd 中读取内容。
 * 当读成功时，read 返回实际所读的字节数。
 * 如果返回的值是 0 表示已经读到文件的结束了，小于 0 表示出现了错误。
-* 如果错误为 EINTR 说明读是由中断引起的；如果是 ECONNREST 表示网络连接出了问题。
+* 如果错误为 EINTR 说明读是由中断引起的；如果是 ECONNRESET 表示网络连接出了问题。
 
 ##### write()
 
@@ -2528,9 +2529,9 @@ ssize_t write(int fd, const void *buf, size_t count);
 
 1. 客户端向服务器发送一个 SYN J
 2. 服务器向客户端响应一个 SYN K，并对 SYN J 进行确认 ACK J+1
-3. 客户端再想服务器发一个确认 ACK K+1
+3. 客户端再向服务器发一个确认 ACK K+1
 
-只有就完了三次握手，但是这个三次握手发生在 Socket 的那几个函数中呢？请看下图：
+这样就完成了三次握手，但是这个三次握手发生在 Socket 的那几个函数中呢？请看下图：
 
 ![socket 中发送的 TCP 三次握手](http://images.cnblogs.com/cnblogs_com/skynet/201012/201012122157467258.png)
 
@@ -2540,11 +2541,11 @@ ssize_t write(int fd, const void *buf, size_t count);
 3. 客户端收到服务器的 SYN K ，ACK J+1 之后，这时 connect 返回，并对 SYN K 进行确认；  
 4. 服务器收到 ACK K+1 时，accept 返回，至此三次握手完毕，连接建立。
 
-#### Socket 中 TCP 的四次握手释放连接
+#### Socket 中 TCP 的四次挥手释放连接
 
-上面介绍了 socket 中 TCP 的三次握手建立过程，及其涉及的 socket 函数。现在我们介绍 socket 中的四次握手释放连接的过程，请看下图：
+上面介绍了 socket 中 TCP 的三次握手建立过程，及其涉及的 socket 函数。现在我们介绍 socket 中的四次挥手释放连接的过程，请看下图：
 
-![socket 中发送的 TCP 四次握手](http://images.cnblogs.com/cnblogs_com/skynet/201012/201012122157487616.png)
+![socket 中发送的 TCP 四次挥手](http://images.cnblogs.com/cnblogs_com/skynet/201012/201012122157487616.png)
 
 图示过程如下：
 
@@ -2566,7 +2567,7 @@ ssize_t write(int fd, const void *buf, size_t count);
 * 数据（data）：描述事物的符号记录称为数据。
 * 数据库（DataBase，DB）：是长期存储在计算机内、有组织的、可共享的大量数据的集合，具有永久存储、有组织、可共享三个基本特点。
 * 数据库管理系统（DataBase Management System，DBMS）：是位于用户与操作系统之间的一层数据管理软件。
-* 数据库系统（DataBase System，DBS）：是有数据库、数据库管理系统（及其应用开发工具）、应用程序和数据库管理员（DataBase Administrator DBA）组成的存储、管理、处理和维护数据的系统。
+* 数据库系统（DataBase System，DBS）：是由数据库、数据库管理系统（及其应用开发工具）、应用程序和数据库管理员（DataBase Administrator DBA）组成的存储、管理、处理和维护数据的系统。
 * 实体（entity）：客观存在并可相互区别的事物称为实体。
 * 属性（attribute）：实体所具有的某一特性称为属性。
 * 码（key）：唯一标识实体的属性集称为码。
@@ -2608,7 +2609,7 @@ ssize_t write(int fd, const void *buf, size_t count);
   </tr>
   <tr>
     <td>基本表</td>
-    <td><code>CREATE SCHEMA</code>，<code>ALTER TABLE</code></td>
+    <td><code>CREATE TABLE</code>，<code>ALTER TABLE</code></td>
   </tr>
     <tr>
     <td>视图</td>
@@ -2659,12 +2660,12 @@ ssize_t write(int fd, const void *buf, size_t count);
 * 第二范式（2NF）：满足 1NF，每个非主属性完全依赖于主键（消除 1NF 非主属性对码的部分函数依赖）。
 * 第三范式（3NF）：满足 2NF，任何非主属性不依赖于其他非主属性（消除 2NF 非主属性对码的传递函数依赖）。
 * 鲍依斯-科得范式（BCNF）：满足 3NF，任何非主属性不能对主键子集依赖（消除 3NF 主属性对码的部分和传递函数依赖）。
-* 第四范式（4NF）：满足 3NF，属性之间不能有非平凡且非函数依赖的多值依赖（消除 3NF 非平凡且非函数依赖的多值依赖）。
+* 第四范式（4NF）：满足 BCNF，属性之间不能有非平凡且非函数依赖的多值依赖（消除 BCNF 非平凡且非函数依赖的多值依赖）。
 
 ### 数据库恢复
 
 * 事务：是用户定义的一个数据库操作序列，这些操作要么全做，要么全不做，是一个不可分割的工作单位。
-* 事物的 ACID 特性：原子性、一致性、隔离性、持续性。
+* 事务的 ACID 特性：原子性、一致性、隔离性、持续性。
 * 恢复的实现技术：建立冗余数据 -> 利用冗余数据实施数据库恢复。
 * 建立冗余数据常用技术：数据转储（动态海量转储、动态增量转储、静态海量转储、静态增量转储）、登记日志文件。
 
@@ -2680,7 +2681,7 @@ ssize_t write(int fd, const void *buf, size_t count);
         * 预防：一次封锁法、顺序封锁法；
         * 诊断：超时法、等待图法；
         * 解除：撤销处理死锁代价最小的事务，并释放此事务的所有的锁，使其他事务得以继续运行下去。
-* 可串行化调度：多个事务的并发执行是正确的，当且仅当其结果与按某一次序串行地执行这些事务时的结果相同。可串行性时并发事务正确调度的准则。
+* 可串行化调度：多个事务的并发执行是正确的，当且仅当其结果与按某一次序串行地执行这些事务时的结果相同。可串行性是并发事务正确调度的准则。
 
 <a id="design-pattern"></a>
 
@@ -2731,7 +2732,7 @@ ssize_t write(int fd, const void *buf, size_t count);
 
 * 栈：由操作系统自动分配释放，存放函数的参数值、局部变量等的值，用于维护函数调用的上下文
 * 堆：一般由程序员分配释放，若程序员不释放，程序结束时可能由操作系统回收，用来容纳应用程序动态分配的内存区域
-* 可执行文件映像：存储着可执行文件在内存中的映像，由装载器装载是将可执行文件的内存读取或映射到这里
+* 可执行文件映像：存储着可执行文件在内存中的映像，由装载器装载时将可执行文件的内存读取或映射到这里
 * 保留区：保留区并不是一个单一的内存区域，而是对内存中受到保护而禁止访问的内存区域的总称，如通常 C 语言讲无效指针赋值为 0（NULL），因此 0 地址正常情况下不可能有效的访问数据
 
 #### 栈
@@ -2757,7 +2758,7 @@ ssize_t write(int fd, const void *buf, size_t count);
 普遍原因：
 
 * 将指针初始化为 NULL，之后没有给它一个合理的值就开始使用指针
-* 没用初始化栈中的指针，指针的值一般会是随机数，之后就直接开始使用指针
+* 没有初始化栈中的指针，指针的值一般会是随机数，之后就直接开始使用指针
 
 ### 编译链接
 
@@ -2794,7 +2795,7 @@ Mac|Mach-O|o|dylib、tbd、framework|a、framework
 * Unix 的 `a.out` 格式
 * MS-DOS 的 `.COM` 格式
 
-> PE 和 ELF 都是 COFF（Common File Format）的变种
+> PE 和 ELF 都是 COFF（Common Object File Format）的变种
 
 ##### 目标文件存储结构
 
@@ -2968,7 +2969,7 @@ Hello, World!
 _tWinMain 与 _tmain 函数声明
 
 ```cpp
-Int WINAPI _tWinMain(
+int WINAPI _tWinMain(
     HINSTANCE hInstanceExe,
     HINSTANCE,
     PTSTR pszCmdLine,
@@ -2982,10 +2983,10 @@ int _tmain(
 
 应用程序类型|入口点函数|嵌入可执行文件的启动函数
 ---|---|---
-处理ANSI字符（串）的GUI应用程序|_tWinMain(WinMain)|WinMainCRTSartup
-处理Unicode字符（串）的GUI应用程序|_tWinMain(wWinMain)|wWinMainCRTSartup
-处理ANSI字符（串）的CUI应用程序|_tmain(Main)|mainCRTSartup
-处理Unicode字符（串）的CUI应用程序|_tmain(wMain)|wmainCRTSartup
+处理ANSI字符（串）的GUI应用程序|_tWinMain(WinMain)|WinMainCRTStartup
+处理Unicode字符（串）的GUI应用程序|_tWinMain(wWinMain)|wWinMainCRTStartup
+处理ANSI字符（串）的CUI应用程序|_tmain(Main)|mainCRTStartup
+处理Unicode字符（串）的CUI应用程序|_tmain(wMain)|wmainCRTStartup
 动态链接库（Dynamic-Link Library）|DllMain|_DllMainCRTStartup 
 
 ### Windows 的动态链接库（Dynamic-Link Library）
@@ -3081,7 +3082,7 @@ VOID WINAPI FreeLibraryAndExitThread(
 );
 ```
 
-#### 显示地链接到导出符号
+#### 显式地链接到导出符号
 
 GetProcAddress 函数声明
 
@@ -3222,7 +3223,7 @@ int main( void )
 3. 入口函数初始化后，调用 main 函数，正式开始执行程序主体部分。
 4. main 函数执行完毕后，返回到入口函数进行清理工作（包括全局变量析构、堆销毁、关闭I/O等），然后进行系统调用结束进程。
 
-> 一个程序的 I/O 指代程序与外界的交互，包括文件、管程、网络、命令行、信号等。更广义地讲，I/O 指代操作系统理解为 “文件” 的事物。
+> 一个程序的 I/O 指代程序与外界的交互，包括文件、管道、网络、命令行、信号等。更广义地讲，I/O 指代操作系统理解为 “文件” 的事物。
 
 #### glibc 入口
 
@@ -3382,7 +3383,7 @@ int main( void )
 【音视频编解码】
 
 1. 硕士及以上学历，计算机、信号处理、数学、信息类及相关专业和方向； 
-2. 视频编解码基础扎实，熟常用的 HEVC 或 H264，有较好的数字信号处理基础； 
+2. 视频编解码基础扎实，熟悉常用的 HEVC 或 H264，有较好的数字信号处理基础； 
 3. 掌握 C/C++，代码能力强, 熟悉一种汇编语言尤佳； 
 4. 较强的英文文献阅读能力； 
 5. 学习能力强，具有团队协作精神，有较强的抗压能力。
@@ -3456,3 +3457,4 @@ int main( void )
 本仓库遵循 CC BY-NC-SA 4.0（署名 - 非商业性使用 - 相同方式共享） 协议，转载请注明出处，不得用于商业目的。
 
 [![CC BY-NC-SA 4.0](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)](https://github.com/huihut/interview/blob/master/LICENSE)
+

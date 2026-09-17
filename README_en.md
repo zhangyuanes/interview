@@ -713,7 +713,7 @@ Regular reference, which generally represents the identity of the object.
 
 An rvalue reference is a reference that must be bound to an rvalue (a temporary object, an object to be destroyed) and generally represents the value of the object.
 
-An rvalue reference implements Move Sementics and Perfect Forwarding. Its main purpose is twofold:
+An rvalue reference implements Move Semantics and Perfect Forwarding. Its main purpose is twofold:
 
 * Eliminate unnecessary copying of objects when two objects interact, saving computing storage resources and improving efficiency.
 * Ability to define generic functions more concisely.
@@ -834,8 +834,8 @@ Function overloading
 class A
 {
 public:
-    void do(int a);
-    void do(int a, int b);
+    void print(int a);
+    void print(int a, int b);
 };
 ```
 
@@ -916,7 +916,7 @@ int main()
     shape1->calcArea();    
     delete shape1;  // Because Shape has a virtual destructor, when delete deletes the memory, it first calls the subclass destructor and then the base class destructor to prevent memory leaks.
     shape1 = NULL;
-    return 0；
+    return 0;
 }
 ```
 
@@ -1061,7 +1061,7 @@ header file：`#include <memory>`
 #### C++ 98
 
 ```cpp
-std::auto_ptr<std::string> ps (new std::string(str))；
+std::auto_ptr<std::string> ps (new std::string(str));
 ```
 
 #### C++ 11
@@ -1098,7 +1098,7 @@ Deprecated by c ++ 11 due to lack of language features such as `std::move` seman
 
 ##### auto_ptr compared to unique_ptr
 
-* auto_ptr can be assigned a copy, and ownership is transferred after copying; unqiue_ptr has no copy assignment semantics, but implements `move` semantics;
+* auto_ptr can be assigned a copy, and ownership is transferred after copying; unique_ptr has no copy assignment semantics, but implements `move` semantics;
 * auto_ptr objects cannot manage arrays (destructive call `delete`), unique_ptr can manage arrays (destructive call` delete [] `);
 
 ### Casting Operator
@@ -1658,10 +1658,10 @@ Binary tree chain store pictures
 * Binary search tree (binary sort tree): left <root <right
 * Balanced binary tree (AVL tree): | Left subtree tree height-Right subtree tree height | <= 1
 * Least Imbalanced Tree: Balanced Binary Tree Inserting New Nodes Causes Imbalanced Subtree: Adjustment:
-     * LL type: left-handed child of the root
-     * RR type: right child of the root
-     * LR type: Left-handed child of the root, left-handed
-     * RL type: Left child of right child, turn right first, then left
+     * LL type: rotate the root right
+     * RR type: rotate the root left
+     * LR type: first left-rotate the root's left child, then right-rotate the root
+     * RL type: first right-rotate the root's right child, then left-rotate the root
 
 ### Other trees and forests
 
@@ -1693,10 +1693,10 @@ Balanced binary tree inserting new nodes causes unbalanced subtrees
 
 Adjustment:
 
-* LL type: left child of the root
-* RR type: right child of the root
-* LR type: Left-handed child of the root, left-handed, then right-handed
-* RL type: Left child of right child, right-handed first, then left-handed
+* LL type: rotate the root right
+* RR type: rotate the root left
+* LR type: first left-rotate the root's left child, then right-rotate the root
+* RL type: first right-rotate the root's right child, then left-rotate the root
 
 #### Red black tree
 
@@ -1786,7 +1786,7 @@ Sorting Algorithm | Average Time Complexity | Worst Time Complexity | Spatial Co
 [Merge Sort](Algorithm/MergeSort.h) | O(n*log<sub>2</sub>n) | O(n*log<sub>2</sub>n)|O(n)| Stable
 [Shell Sort](Algorithm/ShellSort.h) | O(n*log<sup>2</sup>n)|O(n<sup>2</sup>)|O(1)|Unstable
 [Count Sort](Algorithm/CountSort.cpp) | O(n+m)|O(n+m)|O(n+m)|Stable
-[Bucket Sort](Algorithm/BucketSort.cpp) | O(n)|O(n)|O(m)|Stable
+[Bucket Sort](Algorithm/BucketSort.cpp) | O(n)|O(n<sup>2</sup>)|O(m)|Stable
 [Radix Sort](Algorithm/RadixSort.h) | O(k*n)|O(n<sup>2</sup>)| |Stable
 
 > * Are arranged in ascending order
@@ -1806,7 +1806,7 @@ Find Algorithm | Average Time Complexity | Spatial Complexity | Find Conditions
 [Hash Table](DataStructure/HashTable.cpp) | O(1) | O(n) | sorted or unsorted
 [Binary Search Tree (BST Search)](Algorithm/BSTSearch.h) |O(log<sub>2</sub>n) |   | 
 [Red Black Tree](DataStructure/RedBlackTree.cpp) |O(log<sub>2</sub>n) | |
-2-3 Tree | O(log<sub>2</sub>n - log<sub>3</sub>n) |   | 
+2-3 Tree | O(log n) |   | 
 B Tree/B+ Tree |O(log<sub>2</sub>n) |   | 
 
 ### Graph search algorithm
@@ -2108,7 +2108,7 @@ Data link layer | Assemble bits into frames and point-to-point delivery (Frame) 
 Network layer | Responsible for the transmission of data packets from source to sink and Internet interconnection (packets) | IP, ICMP, ARP, RARP, OSPF, IPX, RIP, IGRP (router)
 Transport layer | Provide end-to-end reliable message delivery and error recovery (Segment) | TCP, UDP, SPX
 Session layer | Establishing, managing, and terminating sessions (session protocol data unit SPDU) | NFS, SQL, NETBIOS, RPC
-Presentation Layer | Translate, Encrypt, and Compress Data (Representation Protocol Data Unit PPDU) | JPEG, MPEG, ASII
+Presentation Layer | Translate, Encrypt, and Compress Data (Representation Protocol Data Unit PPDU) | JPEG, MPEG, ASCII
 Application layer | A means to allow access to the OSI environment (Application Protocol Data Unit APDU) | FTP, DNS, Telnet, SMTP, HTTP, WWW, NFS
 
 
@@ -2521,7 +2521,7 @@ ssize_t write(int fd, const void *buf, size_t count);
 * The read function is responsible for reading content from fd.
 * When the read is successful, read returns the actual number of bytes read.
 * If the returned value is 0, it means that the end of the file has been read, and if it is less than 0, an error has occurred.
-* If the error is EINTR, the reading is caused by interruption; if it is ECONNREST, there is a problem with the network connection.
+* If the error is EINTR, the reading is caused by interruption; if it is ECONNRESET, there is a problem with the network connection.
 
 ##### write ()
 
@@ -2618,7 +2618,7 @@ So there is a FIN and ACK in each direction.
   </ tr>
   <tr>
     <td> Basic table </ td>
-    <td> <code> CREATE SCHEMA </ code>, <code> ALTER TABLE </ code> </ td>
+    <td> <code> CREATE TABLE </ code>, <code> ALTER TABLE </ code> </ td>
   </ tr>
     <tr>
     <td> View </ td>
@@ -2804,7 +2804,7 @@ The files generated by the compiler after compiling the source code are called o
 * Unix `a.out` format
 * MS-DOS `.COM` format
 
-> PE and ELF are both COFF (Common File Format) variants
+> PE and ELF are both COFF (Common Object File Format) variants
 
 ##### Object file storage structure
 
@@ -2978,7 +2978,7 @@ Hello, World!
 _tWinMain versus _tmain Function declaration
 
 ```cpp
-Int WINAPI _tWinMain(
+int WINAPI _tWinMain(
     HINSTANCE hInstanceExe,
     HINSTANCE,
     PTSTR pszCmdLine,
@@ -2992,10 +2992,10 @@ int _tmain(
 
 Application Type | Entry Point Function | Embedded Startup Function
 --- | --- | ---
-GUI application for processing ANSI characters (strings) | _tWinMain (WinMain) | WinMainCRTSartup
-GUI application for handling Unicode characters (strings) | _tWinMain (wWinMain) | wWinMainCRTSartup
-CUI application that handles ANSI characters (strings) | _tmain (Main) | mainCRTSartup
-CUI application for handling Unicode characters (strings) | _tmain (wMain) | wmainCRTSartup
+GUI application for processing ANSI characters (strings) | _tWinMain (WinMain) | WinMainCRTStartup
+GUI application for handling Unicode characters (strings) | _tWinMain (wWinMain) | wWinMainCRTStartup
+CUI application that handles ANSI characters (strings) | _tmain (Main) | mainCRTStartup
+CUI application for handling Unicode characters (strings) | _tmain (wMain) | wmainCRTStartup
 Dynamic-Link Library | DllMain | _DllMainCRTStartup
 
 ### Dynamic-Link Library for Windows
@@ -3045,7 +3045,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
         break;
     case DLL_THREAD_ATTACH:
         // When the process creates a thread, it is used to tell the DLL to perform thread-related initialization (non-main thread execution)
-        // A thread is bing created.
+        // A thread is being created.
         break;
     case DLL_THREAD_DETACH:
         // The system calls ExitThread before the thread exits, the thread that is about to be terminated performs thread-related cleanup by telling the DLL

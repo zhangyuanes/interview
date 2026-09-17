@@ -52,9 +52,15 @@ int FibonacciSearch(int *a, int n, int key)  //a为要查找的数组,n为要查
     else
     {
        if(mid<n)
+       {
+           delete[] temp; //查找成功，释放临时数组，防止内存泄漏
            return mid; //若相等则说明mid即为查找到的位置
+       }
        else
+       {
+           delete[] temp; //查找成功，释放临时数组，防止内存泄漏
            return n-1; //若mid>=n则说明是扩展的数值,返回n-1
+       }
     }
   }  
   delete [] temp;

@@ -19,7 +19,7 @@
 ## 容器（containers）
 
 * 序列式容器（sequence containers）：元素都是可序（ordered），但未必是有序（sorted）
-* 关联式容器（associattive containers）
+* 关联式容器（associative containers）
 
 ### array
 
@@ -38,8 +38,6 @@ array是固定大小的顺序容器，它们保存了一个以严格的线性顺
 ```cpp
 template < class T, size_t N > class array;
 ```
-
-![](http://img.blog.csdn.net/20160405225541788)
 
 #### array::begin
 
@@ -112,8 +110,8 @@ myarray contains: 5 19 77 34 99
 返回指向数组容器中最后一个元素的反向迭代器。
 
 ```cpp
-      reverse_iterator rbegin（）noexcept;
-const_reverse_iterator rbegin（）const noexcept;
+      reverse_iterator rbegin() noexcept;
+const_reverse_iterator rbegin() const noexcept;
 ```
 Example
 ```cpp
@@ -171,7 +169,7 @@ myarray contains: 14 80 26 4
 
 返回指向数组容器中第一个元素的常量迭代器（const_iterator）；这个迭代器可以增加和减少，但是不能用来修改它指向的内容。
 ```cpp
-const_iterator cbegin（）const noexcept;
+const_iterator cbegin() const noexcept;
 ```
 Example
 ```cpp
@@ -222,13 +220,13 @@ int main ()
 ```
 Output
 ```
-myarray contains: 2 16 77 34 50
+myarray contains: 15 720 801 1002 3502
 ```
 
 #### array::crbegin
 返回指向数组容器中最后一个元素的常量反向迭代器（const_reverse_iterator）
 ```cpp
-const_reverse_iterator crbegin（）const noexcept;
+const_reverse_iterator crbegin() const noexcept;
 ```
 Example
 ```cpp
@@ -287,7 +285,7 @@ myarray backwards: 60 50 40 30 20 10
 返回数组容器中元素的数量。
 
 ```cpp
-constexpr size_type size（）noexcept;
+constexpr size_type size() noexcept;
 ```
 Example
 ```cpp
@@ -587,9 +585,9 @@ second: 10 20 30 40 50
 #### get（array）
 形如：std::get<0>(myarray)；传入一个数组容器，返回指定位置元素的引用。
 ```cpp
-template <size_t I，class T，size_t N> T＆get（array <T，N>＆arr）noexcept; 
-template <size_t I，class T，size_t N> T && get（array <T，N> && arr）noexcept; 
-template <size_t I，class T，size_t N> const T＆get（const array <T，N>＆arr）noexcept;
+template <size_t I, class T, size_t N> T&get(array <T,N>&arr) noexcept; 
+template <size_t I, class T, size_t N> T && get(array <T,N> && arr) noexcept; 
+template <size_t I, class T, size_t N> const T&get(const array <T,N>&arr) noexcept;
 ```
 Example
 ```cpp
@@ -622,24 +620,24 @@ first element in mytuple: 10
 #### relational operators (array)
 形如：arrayA != arrayB、arrayA > arrayB；依此比较数组每个元素的大小关系。
 ```cpp
-（1）	
-template <class T，size_T N> 
-  bool operator ==（const array <T，N>＆lhs，const array <T，N>＆rhs）;
-（2）	
-template <class T，size_T N> 
-  bool operator！=（const array <T，N>＆lhs，const array <T，N>＆rhs）;
-（3）	
-template <class T，size_T N> 
-  bool operator <（const array <T，N>＆lhs，const array <T，N>＆rhs）;
-（4）	
-template <class T，size_T N> 
-  bool operator <=（const array <T，N>＆lhs，const array <T，N>＆rhs）;
-（5）	
-template <class T，size_T N> 
-  bool operator>（const array <T，N>＆lhs，const array <T，N>＆rhs）;
-（6）	
-template <class T，size_T N> 
-  bool operator> =（const array <T，N>＆lhs，const array <T，N>＆rhs）;
+(1)	
+template <class T, size_t N> 
+  bool operator ==(const array <T,N>&lhs, const array <T,N>&rhs);
+(2)	
+template <class T, size_t N> 
+  bool operator!=(const array <T,N>&lhs, const array <T,N>&rhs);
+(3)	
+template <class T, size_t N> 
+  bool operator <(const array <T,N>&lhs, const array <T,N>&rhs);
+(4)	
+template <class T, size_t N> 
+  bool operator <=(const array <T,N>&lhs, const array <T,N>&rhs);
+(5)	
+template <class T, size_t N> 
+  bool operator>(const array <T,N>&lhs, const array <T,N>&rhs);
+(6)	
+template <class T, size_t N> 
+  bool operator>=(const array <T,N>&lhs, const array <T,N>&rhs);
 ```
 Example
 ```cpp
@@ -686,13 +684,12 @@ vector是表示可以改变大小的数组的序列容器。
 
 针对 vector 的各种常见操作的复杂度（效率）如下： 
 * 随机访问 - 常数 O(1) 
-* 在尾部增删元素 - 平摊（amortized）常数 O(1)}} 
-* 增删元素 - 至 vector 尾部的线性距离 O(n)}}
+* 在尾部增删元素 - 平摊（amortized）常数 O(1) 
+* 增删元素 - 至 vector 尾部的线性距离 O(n)
 
 ```cpp
 template < class T, class Alloc = allocator<T> > class vector;
 ```
-![](http://img.blog.csdn.net/20160406151211233)
 
 #### vector::vector
 （1）empty容器构造函数（默认构造函数）
@@ -804,8 +801,8 @@ Size of bar: 3
 #### vector::rend
 #### vector::cbegin
 #### vector::cend
-#### vector::rcbegin
-#### vector::rcend
+#### vector::crbegin
+#### vector::crend
 #### vector::size
 
 返回vector中元素的数量。
@@ -1658,7 +1655,6 @@ deque上常见操作的复杂性（效率）如下：
 ```cpp
 template < class T, class Alloc = allocator<T> > class deque;
 ```
-![](http://img.blog.csdn.net/20170727225856144?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvRlg2Nzc1ODg=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
 ![](https://images0.cnblogs.com/blog/559453/201401/092150340824.png)
 
 #### deque::deque
@@ -1916,8 +1912,6 @@ forward\_list（单向链表）被实现为单链表; 单链表可以将它们�
 的主要缺点修饰符Modifiers S和列表相比这些其它序列容器s是说，他们缺乏可以通过位置的元素的直接访问; 例如，要访问forward_list中的第六个元素，必须从开始位置迭代到该位置，这需要在这些位置之间的线性时间。它们还消耗一些额外的内存来保持与每个元素相关联的链接信息（这可能是大型小元素列表的重要因素）。
 
 该修饰符Modifiersclass模板的设计考虑到效率：按照设计，它与简单的手写C型单链表一样高效，实际上是唯一的标准容器，为了效率的考虑故意缺少尺寸成员函数：由于其性质作为一个链表，具有一个需要一定时间的大小的成员将需要它保持一个内部计数器的大小（如列表所示）。这会消耗一些额外的存储空间，并使插入和删除操作效率稍低。要获取forward_list对象的大小，可以使用距离算法的开始和结束，这是一个需要线性时间的操作。
-
-![](http://img.blog.csdn.net/20160407212133266)
 
 #### forward\_list::forward\_list
 
@@ -2220,8 +2214,8 @@ mystack contains: 20 10
 #### stack::push_range(c++23)
 将范围中的每个元素插入到栈的末尾
 ```cpp
-template <class InputIterator>
-void push_range(InputIterator first, InputIterator last);
+template <container-compatible-range<T> R>
+void push_range(R&& rg);
 ```
 Example:
 ```cpp
@@ -2412,7 +2406,7 @@ Output:
 ```cpp
 3 3 3
 ```
-#### multset::find
+#### multiset::find
 返回一个迭代器，指向给定键的元素。如果找不到给定键，则返回一个指向 multiset 的末尾的迭代器。
 Example:
 ```cpp
@@ -3073,7 +3067,7 @@ a: 42
 b: 3.14
 c: Hello
 ```
-#### tuple::apply(c++23)
+#### tuple::apply(c++17)
 将函数 F 应用于 tuple t
 ```cpp
 template <class F, class Tuple>
@@ -3259,9 +3253,8 @@ Output:
 Subspan : 3 4 5
 ```
 ### 无序容器（基于哈希表实现）
-![](http://img.blog.csdn.net/20160410123436394)
 
-#### unordered_set 
+#### unordered_set
 存储唯一的元素，不允许重复，元素的顺序是无序的。
 #### unordered_multiset 
 存储元素，允许重复，元素的顺序是无序的。
@@ -3271,7 +3264,6 @@ Subspan : 3 4 5
 存储键值对，允许键重复，元素的顺序是无序的。
 ### 平坦容器(C++23)
 使用连续的存储空间，速度优化。
-![](http://img.blog.csdn.net/20160410123436394)
 
 #### flat_set
 
